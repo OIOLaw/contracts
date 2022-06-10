@@ -62,6 +62,20 @@ contract OIOTrustTest is DSTest {
 
         trust.distribute(trustId, 1);
 
-        assertEq(token.balanceOf(RecipientAddress), 1e17, "Incorrect amount received");
+        assertEq(
+            token.balanceOf(RecipientAddress),
+            1e17,
+            "Incorrect amount received"
+        );
+
+        cheats.warp(6 days);
+
+        trust.distribute(trustId, 1);
+
+        assertEq(
+            token.balanceOf(RecipientAddress),
+            4e17,
+            "Incorrect amount received"
+        );
     }
 }
