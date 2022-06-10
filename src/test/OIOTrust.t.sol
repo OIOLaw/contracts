@@ -14,7 +14,7 @@ contract OIOTrustTest is DSTest {
     TestToken token;
 
     address OwnerAddress = address(1);
-    address RecipientAddress = address(1);
+    address RecipientAddress = address(2);
 
     function setUp() public {
         cheats.startPrank(OwnerAddress);
@@ -53,14 +53,14 @@ contract OIOTrustTest is DSTest {
 
     function testDistribution() public {
         cheats.startPrank(OwnerAddress);
-        trust.createTrust(RecipientAddress, 2 days, 1);
+        uint256 trustId = trust.createTrust(RecipientAddress, 2 days, 1);
         token.approve(address(trust), 1e18);
-        trust.deposit(0, address(token), 1e18, 1e17);
+        trust.deposit(trustId, address(token), 1e18, 1e17);
         cheats.stopPrank();
 
-        cheats.warp(3 days + 1 seconds);
+        cheats.warp(3 days);
 
-        trust.distribute(0, 1);
+        trust.distribute(trustId, 1);
 
         assertEq(token.balanceOf(RecipientAddress), 1e17, "Incorrect amount received");
     }

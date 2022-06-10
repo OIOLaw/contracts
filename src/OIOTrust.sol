@@ -121,6 +121,7 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
         info.depositsCount.increment();
         info.deposits[depositId].erc20Token = erc20Token;
         info.deposits[depositId].amount = amount;
+        info.deposits[depositId].installmentAmount = installmentAmount;
     }
 
     /**
@@ -154,7 +155,7 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
             trustId < Math.min(end, _tokenIdCounter.current());
             trustId++
         ) {
-            if (trusts[trustId].startTime > block.timestamp) {
+            if (trusts[trustId].startTime <= block.timestamp) {
                 uint256 expectedInstallmentsPaid = (block.timestamp -
                     trusts[trustId].startTime) /
                     (trusts[trustId].frequencyInDays * 1 days);
@@ -177,13 +178,14 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
                     );
                     // Last installment
                     if (
-                        requiredAmount <
+                        requiredAmount >
                         trusts[trustId].deposits[depositId].amount
                     ) {
                         requiredAmount = trusts[trustId]
                             .deposits[depositId]
                             .amount;
                     }
+
                     token.transfer(holder, requiredAmount);
                 }
                 trusts[trustId].installmentsPaid += differenceInstallmentsPaid;
