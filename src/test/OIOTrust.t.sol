@@ -78,4 +78,29 @@ contract OIOTrustTest is DSTest {
             "Incorrect amount received"
         );
     }
+
+    function testWithdraw() public {
+        cheats.startPrank(OwnerAddress);
+        // create trust
+        uint256 trustId = trust.createTrust(RecipientAddress, 2 days, 1);
+        token.approve(address(trust), 1e18);
+        trust.deposit(trustId, address(token), 1e18, 1e17);
+
+        assertEq(
+            trust.getTokenAmount(trustId, address(token)),
+            1e18,
+            "incorrect amount left after withdrawing"
+        );
+
+        // withdraw
+        trust.withdraw(trustId, address(token), 1e17);
+        // emit log("message");
+        assertEq(
+            trust.getTokenAmount(trustId, address(token)),
+            1e18 - 1e17,
+            "incorrect amount left after withdrawing"
+        );
+
+        cheats.stopPrank();
+    }
 }
