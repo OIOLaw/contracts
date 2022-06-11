@@ -32,7 +32,7 @@ contract OIOTrustTest is DSTest {
         assertEq(trust.ownerOf(0), RecipientAddress, "Isn't owner");
         assertEq(
             trust.tokenURI(0),
-            "data:application/json;base64,eyJkZXNjcmlwdGlvbiI6Ik9JT1RydXN0LCB0b2tlbnMgaGVsZDogCiIsIm5hbWUiOiJPSU9UcnVzdCBORlQgIzAiLGltYWdlOiJkYXRhOmltYWdlL3N2ZztiYXNlNjQsUEhOMlp6NDhMM04yWno0PSIsImJhY2tncm91bmRfY29sb3IiOiJmZmZmZmYifQ==",
+            "data:application/json;base64,eyJkZXNjcmlwdGlvbiI6Ik9JT1RydXN0LCB0b2tlbnMgaGVsZDogXG4iLCJuYW1lIjoiT0lPVHJ1c3QgTkZUICMwIiwiaW1hZ2UiOiJkYXRhOmltYWdlL3N2ZztiYXNlNjQsIiwiYmFja2dyb3VuZF9jb2xvciI6ImZmZmZmZiIsImNyZWF0b3IiOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDEiLCJzdGFydF90aW1lIjoxNzI4MDAsImZyZXF1ZW5jeV9pbl9kYXlzIjoxLCJpbnN0YWxsbWVudHNfcGFpZCI6MCwidG9rZW5zIjpbXX0=",
             "URI is not set"
         );
     }
@@ -46,7 +46,7 @@ contract OIOTrustTest is DSTest {
 
         assertEq(
             trust.tokenURI(0),
-            "data:application/json;base64,eyJkZXNjcmlwdGlvbiI6Ik9JT1RydXN0LCB0b2tlbnMgaGVsZDogCi0gTXlUb2tlbiBhbW91bnQ6IDEwMDAwMDAwMDAwMDAwMDAwMDAgKGRlY2ltYWxzIDE4KQoiLCJuYW1lIjoiT0lPVHJ1c3QgTkZUICMwIixpbWFnZToiZGF0YTppbWFnZS9zdmc7YmFzZTY0LFBITjJaejQ4TDNOMlp6ND0iLCJiYWNrZ3JvdW5kX2NvbG9yIjoiZmZmZmZmIn0=",
+            "data:application/json;base64,eyJkZXNjcmlwdGlvbiI6Ik9JT1RydXN0LCB0b2tlbnMgaGVsZDogXG4tIE15VG9rZW4gYW1vdW50OiAxMDAwMDAwMDAwMDAwMDAwMDAwIChkZWNpbWFscyAxOClcbiIsIm5hbWUiOiJPSU9UcnVzdCBORlQgIzAiLCJpbWFnZSI6ImRhdGE6aW1hZ2Uvc3ZnO2Jhc2U2NCwiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiZmZmZmZmIiwiY3JlYXRvciI6IjB4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMSIsInN0YXJ0X3RpbWUiOjE3MjgwMCwiZnJlcXVlbmN5X2luX2RheXMiOjEsImluc3RhbGxtZW50c19wYWlkIjowLCJ0b2tlbnMiOlt7Im5hbWUiOiJNeVRva2VuIiwiYW1vdW50IjoxMDAwMDAwMDAwMDAwMDAwMDAwLCJkZWNpbWFscyI6MTh9XX0=",
             "URI is not set"
         );
     }

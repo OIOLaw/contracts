@@ -205,8 +205,9 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
         override(ERC721)
         returns (string memory)
     {
-        bytes memory svg = abi.encodePacked("<svg></svg>");
-        bytes memory description = "OIOTrust, tokens held: \n";
+        address creator = trusts[tokenId].creator;
+        bytes memory description = "OIOTrust, tokens held: \\n";
+        bytes memory tokensJson = "";
         for (
             uint256 depositId = 0;
             depositId < trusts[tokenId].depositsCount.current();
@@ -223,7 +224,20 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
                 Strings.toString(trusts[tokenId].deposits[depositId].amount),
                 " (decimals ",
                 Strings.toString(token.decimals()),
-                ")\n"
+                ")\\n"
+            );
+            if (depositId > 0) {
+                tokensJson = abi.encodePacked(tokensJson, ",");
+            }
+            tokensJson = abi.encodePacked(
+                tokensJson,
+                '{"name":"',
+                token.name(),
+                '","amount":',
+                Strings.toString(trusts[tokenId].deposits[depositId].amount),
+                ',"decimals":',
+                Strings.toString(token.decimals()),
+                "}"
             );
         }
         bytes memory json = abi.encodePacked(
@@ -231,9 +245,22 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
             description,
             '","name":"OIOTrust NFT #',
             Strings.toString(tokenId),
-            '",image:"data:image/svg;base64,',
-            Base64.encode(svg),
-            '","background_color":"ffffff"}'
+            '","image":"data:image/svg;base64,',
+            '","background_color":"ffffff"',
+            ',"creator":"',
+            Strings.toHexString(creator),
+            '","start_time":',
+            Strings.toString(trusts[tokenId].startTime)
+        );
+        json = abi.encodePacked(
+            json,
+            ',"frequency_in_days":',
+            Strings.toString(trusts[tokenId].frequencyInDays),
+            ',"installments_paid":',
+            Strings.toString(trusts[tokenId].installmentsPaid),
+            ',"tokens":[',
+            tokensJson,
+            "]}"
         );
         return string(abi.encodePacked(_dataUri, Base64.encode(json)));
     }
