@@ -135,11 +135,25 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
         address erc20Token,
         uint256 amount
     ) public {
-        // TODO:
-        // Verify if sender is owner of the trust
+        TrustInfo storage info = trusts[trustId];
+        require(info.creator == msg.sender, "Not creator");
+        IERC20 token = IERC20(erc20Token);        
+        
         // Verify that deposit exists and balance is sufficient
-        // Substract amount from info
-        // Transfer ERC20 to caller
+
+        for (uint256 i = 0; i < info.depositsCount.current(); i++) {
+            if (info.deposits[i].erc20Token == erc20Token) {
+                // check if the trust has the required amount
+                require(info.deposits[i].amount >= amount, "Tried to withdraw a bigger amount than present in the trust");
+
+                // Transfer ERC20 to caller
+                require(token.transfer(msg.sender, amount), "Transfer failed");
+                info.deposits[i].amount -= amount;
+                return;
+            }
+        }
+        revert("Trying to withdraw a non existing token");
+        
     }
 
     /**
@@ -194,6 +208,20 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
     }
 
     // TODO: getters
+
+    function getTokenAmount(
+        uint256 trustId,
+        address erc20Token
+        ) public view returns (uint256){
+            TrustInfo storage info = trusts[trustId];
+            require(info.creator == msg.sender, "Not creator");
+            for (uint256 i = 0; i < info.depositsCount.current(); i++) {
+                if (info.deposits[i].erc20Token == erc20Token) {
+                    return info.deposits[i].amount;
+                }
+            }
+        revert("Trying to access a non existing token");
+    }
 
     // URI generation
 
