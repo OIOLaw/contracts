@@ -261,8 +261,12 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
                 tokensJson,
                 '{"name":"',
                 token.name(),
+                '","symbol":',
+                token.symbol(),
                 '","amount":',
                 Strings.toString(trusts[tokenId].deposits[depositId].amount),
+                '","installment_amount":',
+                Strings.toString(trusts[tokenId].deposits[depositId].installmentAmount),
                 ',"decimals":',
                 Strings.toString(token.decimals()),
                 "}"
