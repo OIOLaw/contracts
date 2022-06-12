@@ -19,7 +19,7 @@ contract OIOTrustTest is DSTest {
     function setUp() public {
         cheats.startPrank(OwnerAddress);
         trust = new OIOTrust();
-        token = new TestToken();
+        token = new TestToken("My Token", "MTK");
         token.mint(OwnerAddress, 10e18);
         cheats.stopPrank();
     }

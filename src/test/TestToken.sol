@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TestToken is ERC20, ERC20Burnable, Ownable {
-    constructor() ERC20("MyToken", "MTK") {
-        _mint(msg.sender, 1e22);
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
+        _mint(msg.sender, 1e24);
     }
 
     function mint(address to, uint256 amount) public onlyOwner {

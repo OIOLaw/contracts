@@ -39,6 +39,8 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
     // Contract
     constructor() ERC721("OIOTrust", "OIO") {}
 
+    event TrustCreated(address creator, uint256 trustId);
+
     /**
      * Create a new trust
      * @param to Recipient of the trust
@@ -59,6 +61,8 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
         info.startTime = startTime;
         info.frequencyInDays = frequencyInDays;
         info.installmentsPaid = 0;
+
+        emit TrustCreated(msg.sender, tokenId);
         return tokenId;
     }
 
@@ -137,14 +141,17 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
     ) public {
         TrustInfo storage info = trusts[trustId];
         require(info.creator == msg.sender, "Not creator");
-        IERC20 token = IERC20(erc20Token);        
-        
+        IERC20 token = IERC20(erc20Token);
+
         // Verify that deposit exists and balance is sufficient
 
         for (uint256 i = 0; i < info.depositsCount.current(); i++) {
             if (info.deposits[i].erc20Token == erc20Token) {
                 // check if the trust has the required amount
-                require(info.deposits[i].amount >= amount, "Tried to withdraw a bigger amount than present in the trust");
+                require(
+                    info.deposits[i].amount >= amount,
+                    "Tried to withdraw a bigger amount than present in the trust"
+                );
 
                 // Transfer ERC20 to caller
                 require(token.transfer(msg.sender, amount), "Transfer failed");
@@ -153,7 +160,6 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
             }
         }
         revert("Trying to withdraw a non existing token");
-        
     }
 
     /**
@@ -209,17 +215,18 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
 
     // TODO: getters
 
-    function getTokenAmount(
-        uint256 trustId,
-        address erc20Token
-        ) public view returns (uint256){
-            TrustInfo storage info = trusts[trustId];
-            require(info.creator == msg.sender, "Not creator");
-            for (uint256 i = 0; i < info.depositsCount.current(); i++) {
-                if (info.deposits[i].erc20Token == erc20Token) {
-                    return info.deposits[i].amount;
-                }
+    function getTokenAmount(uint256 trustId, address erc20Token)
+        public
+        view
+        returns (uint256)
+    {
+        TrustInfo storage info = trusts[trustId];
+        require(info.creator == msg.sender, "Not creator");
+        for (uint256 i = 0; i < info.depositsCount.current(); i++) {
+            if (info.deposits[i].erc20Token == erc20Token) {
+                return info.deposits[i].amount;
             }
+        }
         revert("Trying to access a non existing token");
     }
 
@@ -261,12 +268,14 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
                 tokensJson,
                 '{"name":"',
                 token.name(),
-                '","symbol":',
+                '","symbol":"',
                 token.symbol(),
                 '","amount":',
                 Strings.toString(trusts[tokenId].deposits[depositId].amount),
-                '","installment_amount":',
-                Strings.toString(trusts[tokenId].deposits[depositId].installmentAmount),
+                ',"installment_amount":',
+                Strings.toString(
+                    trusts[tokenId].deposits[depositId].installmentAmount
+                ),
                 ',"decimals":',
                 Strings.toString(token.decimals()),
                 "}"
@@ -277,8 +286,8 @@ contract OIOTrust is ERC721, ERC721Enumerable, Ownable {
             description,
             '","name":"OIOTrust NFT #',
             Strings.toString(tokenId),
-            '","image":"data:image/svg;base64,',
-            '","background_color":"ffffff"',
+            '","image":"https://oiotrust.netlify.app/logo.svg"',
+            ',"background_color":"000000"',
             ',"creator":"',
             Strings.toHexString(creator),
             '","start_time":',
